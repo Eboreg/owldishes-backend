@@ -1,0 +1,9 @@
+[id^=slides-][id$=-media_items-group] .items {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+[id^=slides-][id$=-media_items-group] .inline-related {
+    flex: 1;
+}
