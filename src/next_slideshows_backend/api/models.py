@@ -72,7 +72,7 @@ class SlideMediaItem(models.Model):
     @property
     def href(self):
         path = reverse("media-item-file", args=(self.pk,))
-        return settings.BASE_URL.rstrip("/") + "/" + path.lstrip("/")
+        return settings.ROOT_URL.rstrip("/") + "/" + path.lstrip("/")
 
     def generate_resized_images(self):
         if self.type == self.Type.IMAGE:
@@ -125,7 +125,7 @@ class SlideMediaItem(models.Model):
                 url = self.get_resized_url(image_sizes[0])
 
         if url.startswith("/"):
-            return settings.BASE_URL + url
+            return settings.ROOT_URL + url
         return url
 
     # pylint: disable=no-member

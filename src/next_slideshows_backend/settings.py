@@ -2,8 +2,10 @@ import os
 from pathlib import Path
 
 
-def env_boolean(key: str):
-    return key in os.environ and os.environ[key].lower() not in ("false", "no", "0")
+def env_boolean(key: str, default: bool = False):
+    if key in os.environ:
+        return os.environ[key].lower() not in ("false", "no", "0")
+    return default
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,10 +22,10 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = env_boolean("DEBUG")
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", ".localhost,127.0.0.1,[::1]").split(",")
-
 INTERNAL_IPS = os.environ.get("INTERNAL_IPS", "127.0.0.1").split(",")
-
-BASE_URL = "http://localhost:8000"
+ROOT_URL = os.environ.get("ROOT_URL", "http://localhost:8000")
+ENVIRONMENT = os.environ.get("ENVIRONMENT", "production")
+DJANGO_DB = os.environ.get("DJANGO_DB", ENVIRONMENT)
 
 
 # Application definition
@@ -83,12 +85,20 @@ WSGI_APPLICATION = f"{SRC_DIR.name}.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-DATABASES = {
-    "default": {
+DATABASES: dict[str, dict] = {
+    "local": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
-    }
+    },
+    "production": {
+        "ENGINE": os.environ.get("PROD_SQL_ENGINE"),
+        "NAME": os.environ.get("PROD_SQL_DB"),
+        "PASSWORD": os.environ.get("PROD_SQL_PASSWORD"),
+        "HOST": os.environ.get("PROD_SQL_HOST"),
+        "USER": os.environ.get("PROD_SQL_USER"),
+    },
 }
+DATABASES["default"] = DATABASES[DJANGO_DB].copy()
 
 
 # Password validation
@@ -112,7 +122,7 @@ LOCALE_PATHS = [SRC_DIR / "locale"]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = os.environ.get("MEDIA_ROOT", BASE_DIR / "media")
 MEDIA_URL = "/media/"
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "static"
