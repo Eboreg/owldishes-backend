@@ -134,6 +134,40 @@ STATICFILES_DIRS = [("assets", BASE_DIR / "assets")]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
+# logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+        "null": {
+            "class": "logging.NullHandler",
+        },
+    },
+    "loggers": {
+        "django.security.DisallowedHost": {
+            "handlers": ["null"],
+            "propagate": False,
+        },
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+        "next_slideshows_backend": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+    },
+}
+
+
 # Own stuff
 IMAGE_SIZES = [480, 720, 1080, 2160]
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
