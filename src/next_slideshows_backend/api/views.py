@@ -26,7 +26,8 @@ class SlideMediaItemViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(methods=["get"], detail=True)
     def file(self, request: Request, pk: str):
-        instance = self.get_object()
+        instance: SlideMediaItem = self.get_object()
+
         try:
             width, height = (
                 int(request.query_params.get("clientWidth", "")),

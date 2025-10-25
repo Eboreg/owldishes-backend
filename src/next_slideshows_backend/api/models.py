@@ -117,7 +117,7 @@ class SlideMediaItem(models.Model):
     def get_url(self, client_width: int | None, client_height: int | None):
         url = self.file.url
 
-        if self.type == self.Type.IMAGE and client_width and client_height:
+        if self.type == self.Type.IMAGE and client_width is not None and client_height is not None:
             client_size = max(client_width, client_height)
             image_sizes = [s for s in sorted(settings.IMAGE_SIZES) if s >= client_size]
 
